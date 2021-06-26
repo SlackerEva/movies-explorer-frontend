@@ -1,0 +1,97 @@
+.menu__close {
+  grid-area: button;
+  background-image: url(../../../images/closePopup.svg);
+  width: 22px;
+  height: 22px;
+  background-color: transparent;
+  border: none;
+  background-size: contain;
+}
+
+.menu__wrapper-button {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.menu__wrapper{
+  grid-area: links;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.menu__link {
+  text-decoration: none;
+  color: #FFF;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 28px;
+}
+
+.menu__link:last-child {
+  padding-bottom: 0;
+}
+
+.menu__link:hover {
+  text-decoration: underline;
+}
+
+.menu__acc-wrapper {
+  justify-content: center;
+  display: flex;
+}
+
+@media (min-width: 425px) and (max-width: 768px) {
+.menu__section {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 13% 12.5% 63.5% 11%;
+    grid-template-areas: 
+    'button'
+    'links'
+    '.'
+    'acc';
+    padding: 22.5px;
+    background-color: #202020;
+    visibility: hidden;
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 32%;
+    right: 0;
+    bottom: 0;
+  }
+
+  .popup_opened {
+    visibility: visible;
+    opacity: 1;
+  }
+  
+}
+
+@media (min-width: 320px) and (max-width: 424px) {
+  .menu__section {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 16% 15% 59% 10%;
+    grid-template-areas: 
+    'button'
+    'links'
+    '.'
+    'acc';
+    padding: 13.5px;
+    background-color: #202020;
+    visibility: hidden;
+    opacity: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  .popup_opened {
+    visibility: visible;
+    opacity: 1;
+  }
+}

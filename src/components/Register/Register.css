@@ -1,0 +1,100 @@
+.register {
+  max-width: 396px;
+  margin: 0 auto;
+}
+
+.logo_padding {
+  padding: 70px  0 40px;
+}
+
+.register__title {
+  margin: 0;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.2;
+  padding-bottom: 40px;
+}
+
+.form__label {
+  display: flex;
+  font-size: 10px;
+  line-height: 1.2;
+  color: #8B8B8B;
+}
+
+.form__input {
+  width: 100%;
+  padding: 15px;
+  margin: 10px 0 20px;
+  background:#2F2F2F;
+  border-radius: 8px;
+  border: none;
+  color: inherit;
+  font-size: 13px;
+  line-height: 1.25;
+  box-sizing: border-box;
+}
+
+.form__input:focus, .main-button:focus {
+  outline: none;
+  border: none;
+}
+
+.main-button {
+  width: 100%;
+  margin: 69px 0 16px;
+  background-color: #3DDC84;
+  border-radius: 3px;
+  border: none;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 1.2;
+  text-align: center;
+  color: inherit;
+  padding: 14px 0;
+}
+
+.register__wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 0 0 70px 0;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.register__text {
+  color: #8B8B8B;
+  margin: 0 6px 0 0;
+}
+
+.register__link {
+  text-decoration: none;
+  color: #3DDC84;
+}
+
+@media (min-width: 320px) and (max-width: 424px) {
+  .register {
+    max-width: 81.2%;
+    text-align: center;
+  }
+
+  .logo_padding {
+    padding: 56px 0 50px;
+  }
+
+  .register__title {
+    padding-bottom: 80px;
+  }
+
+  .main-button {
+    margin: 157px 0 14px;
+    padding: 15px 0;
+    font-size: 12px;
+  }
+
+  .register__wrapper {
+    padding: 0 0 30px 0;
+    font-size: 12px;
+    line-height: 1.2;
+  }
+}

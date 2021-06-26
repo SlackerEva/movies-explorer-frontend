@@ -1,0 +1,39 @@
+.navtab {
+  display: flex;
+  justify-content: center;
+}
+
+.navtab__button {
+  background-color: #303030;
+  border-radius: 10px;
+  color: #FFF;
+  width: 96px;
+  padding: 10px 0;
+  border: none;
+  margin-right: 10px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.3;
+  text-decoration: none;
+  text-align: center;
+}
+
+.navtab__button:last-child {
+  margin-right: 0;
+}
+
+.navtab__button:focus {
+  outline: none;
+  border: none;
+}
+
+@media (min-width: 320px) and (max-width: 424px) {
+  .navtab__button {
+    border-radius: 6px;
+    width: 82px;
+    padding: 5px 0;
+    margin-right: 6px;
+    font-size: 10px;
+    line-height: 1.6;
+  }
+}
