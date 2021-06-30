@@ -1,0 +1,44 @@
+.section-title {
+  font-size: 22px;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+  font-weight: inherit;
+  padding-bottom: 23px;
+  border-bottom: solid 1px #DADADA;
+  margin: 0;
+}
+
+.section-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  grid-area: text;
+}
+
+.section-text_weeks {
+  grid-area: text-weeks;
+}
+
+@media (min-width: 425px) and (max-width: 768px) {
+  .section-text {
+    font-size: 12px;
+    line-height: 1.5;
+  }
+}
+
+@media (min-width: 320px) and (max-width: 424px) {
+  .content {
+    padding-left: 4.4%;
+    padding-right: 4.4%;
+  }
+
+  .section-title {
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  .section-text {
+    font-size: 11px;
+    line-height: 1.4;
+  }
+}

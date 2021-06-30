@@ -1,0 +1,48 @@
+.error {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.error__wrapper {
+  display: block;
+  text-align: center;
+}
+
+.error__code {
+  margin: 0;
+  font-size: 140px;
+  line-height: 1.2;
+  font-weight: inherit;
+}
+
+.error__message {
+  font-size: 16px;
+  line-height: 1.2;
+  margin: 5px 0 184px 0;
+}
+
+.error__link {
+  font-size: 14px;
+  line-height: 1.2;
+  color: #3DDC84;
+  text-decoration: none;
+}
+
+@media (min-width: 320px) and (max-width: 424px) {
+  .error__code {
+    font-size: 80px;
+  }
+  
+  .error__message {
+    font-size: 12px;
+    line-height: 1.25;
+    margin: 10px 0 284px 0;
+  }
+  
+  .error__link {
+    font-size: 12px;
+    line-height: 1.25;
+  }
+}
