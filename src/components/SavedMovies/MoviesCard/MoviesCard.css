@@ -22,6 +22,9 @@
   font-size: 13px;
   line-height: 1.2;
   margin: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .movies-card__duration {
@@ -39,6 +42,19 @@
   background-image: url(../../../images/close.svg);
 }
 
+.movies-card__img {
+  width: 270px;
+  height: 150px;
+  object-fit: fill;
+}
+
+.movies-card__img-button {
+  padding: 0;
+  margin: 0;
+  border: none;
+  display: flex;
+}
+
 @media (min-width: 425px) and (max-width: 768px) {
   .movies-card {
     width: 339px;
@@ -51,6 +67,8 @@
 
   .movies-card__img {
     width: 100%;
+    height: 190px;
+    object-fit: fill;
   }
 }
 
@@ -66,5 +84,7 @@
 
   .movies-card__img {
     width: 100%;
+    height: 168px;
+    object-fit: fill;
   }
 }
