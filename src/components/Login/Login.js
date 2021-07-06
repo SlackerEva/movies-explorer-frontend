@@ -14,7 +14,6 @@ function Login(props) {
     e.preventDefault();
     console.log(data);
     props.onLogin(data);
-    //  props.onLogin(data);
   }
 
   function handleChange(e) {

@@ -2,7 +2,6 @@ import './Register.css';
 import React from 'react';
 import {Link} from "react-router-dom";
 import logo from '../../images/logo.svg';
-import auth from '../../utils/auth';
 
 function Register(props) {
   const [data, setData] = React.useState({
@@ -13,7 +12,7 @@ function Register(props) {
 
   function handleSubmit(e) {
     e.preventDefault();
-    props.onRegister();
+    props.onRegister(data);
   }
 
   function handleChange(e) {

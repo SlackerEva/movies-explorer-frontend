@@ -8,7 +8,7 @@ function SearchForm(props) {
 
   function getText(e) {
     e.preventDefault();
-    props.handleSearchMovies(document.querySelector('.search__input').value);
+    props.handleSearchMovies(document.querySelector('.search__input').value, props.path);
   }
 
   function findShortMovies() {
