@@ -1,10 +1,12 @@
 import React from 'react';
+import MovieCard from '../MoviesCard/MoviesCard';
 import './MoviesCardList.css';
 //import Preloader from '../Preloader/Preloader';
 
 function MoviesCardList(props) {
   const [renderCards, setRenderCards] = React.useState([]);
   const [numberCards, setNumberCards] = React.useState(16);
+  const [cardId, setCardId] = React.useState('');
 
   function addCards() {
     setRenderCards(props.searchCards.filter((card, index) => index < renderCards.length + 4))
@@ -32,7 +34,12 @@ function MoviesCardList(props) {
   return(
     <section className='section-movie'>
       <div className='movies-list'>
-        {renderCards}
+        {renderCards.map((card) => {
+          let check = props.savedMovies.filter((item) => {
+            return item.movieId === card.id;
+          }).length > 0 ? true : false;
+          return <MovieCard card={card} key={card.id} check={check} removeMovie={props.removeMovie} isSaved={props.isSaved} />
+        })}
       </div>
       <div className='movies-list__continue'>
         <button className={`movies-list__button 
