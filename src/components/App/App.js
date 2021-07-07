@@ -56,13 +56,13 @@ function App() {
 
   function handleSearchMovies(text, path) {
     if (path === '/movies') {
-      searchShortMovies(text, movies, setSearchCards);
+      searchShortMovies(text, movies, setSearchCards, path);
     } else {
-      searchShortMovies(text, savedMovies, setSearchSavedCards);
+      searchShortMovies(text, savedMovies, setSearchSavedCards, path);
     }
   }
 
-  function searchShortMovies(text, movies, search) {
+  function searchShortMovies(text, movies, search, path) {
     if (text !== '') {
       if (check === true) {
         search(movies.filter((movie) => {
@@ -73,6 +73,8 @@ function App() {
           return (movie.nameRU).toLowerCase().includes(text.toLowerCase());
         }));
       }
+    } else if (path === '/movies') {
+      alert('Нужно ввести ключевое слово');
     } else {
       search(movies);
     }
@@ -116,7 +118,7 @@ function App() {
     }
   }, [loggedIn]);
 
-  function handleLogin({email, password}) {
+  function handleLogin(email, password) {
     return auth.authorize(email, password)
       .then((value) => {
         if (value.token) {
@@ -133,18 +135,14 @@ function App() {
       });
   }
 
-  function handleRegister(data) {
-    let {name, email, password} = data;
-    console.log(data);
+  function handleRegister(name, email, password) {   
     auth.register(name, email, password)
       .then((res) => {
         if (res.statusCode !== 400){
-          //props.onClick(true);
           history.push('/sign-in');
         }
       })
       .catch((err)=>{
-      //  props.onClick(false);
         console.log(err);
       });
   }
@@ -182,8 +180,9 @@ function App() {
     setIsPopupOpen(false);
   }
 
-  function handleEditProfile(data) {
-    apiMain.editProfile(data)
+  function handleEditProfile(name, email) {
+    console.log(name, email);
+    apiMain.editProfile(name, email)
       .then((values) => {
         setCurrentUser(values);
       })

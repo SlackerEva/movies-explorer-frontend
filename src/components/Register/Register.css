@@ -72,6 +72,20 @@
   color: #3DDC84;
 }
 
+.input-error {
+  font-size: 10px;
+  line-height: 12px;
+  color: #EE3465;
+}
+
+.form__input-error {
+  color: #EE3465;
+}
+
+.main-button-disable {
+  opacity: 0.5;
+}
+
 @media (min-width: 320px) and (max-width: 424px) {
   .register {
     max-width: 81.2%;
