@@ -7,7 +7,6 @@ import Main from '../Main/Main';
 import Profile from '../Profile/Profile';
 import SavedMovies from '../Movies/MoviesCardList/SavedMoviesCardList';
 import Movies from '../Movies/MoviesCardList/MoviesCardList';
-import MoviesCard from '../Movies/MoviesCard/MoviesCard';
 import Footer from '../Footer/Footer';
 import Register from '../Register/Register';
 import Login from '../Login/Login';
@@ -18,19 +17,19 @@ import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import auth from '../../utils/auth';
 import apiMain from '../../utils/MainApi';
+import Preloader from '../../components/Movies/Preloader/Preloader';
 
 function App() {
   const history = useHistory();
   const [isPopupOpen, setIsPopupOpen] = React.useState(false);
-//  const [cards, setCards] = React.useState([]);
   const [movies, setMovies] = React.useState([]);
   const [searchCards, setSearchCards] = React.useState([]);
   const [searchSavedCards, setSearchSavedCards] = React.useState([]);
   const [check, setCheck] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState({_id: '', name: '', email: ''});
   const [loggedIn, setLoggedIn] = React.useState(false);
-  const [data, setData] = React.useState({email: ''});
   const [savedMovies, setSavedMovies] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
     reloadSavedMovies();
@@ -43,6 +42,10 @@ function App() {
         console.log(err);
       });
   }, []);
+
+  React.useEffect(() => {
+    reloadSavedMovies();
+  }, [savedMovies]);
 
   function reloadSavedMovies() {
     apiMain.getMovies()
@@ -88,19 +91,19 @@ function App() {
   function removeMovie(card) {
     savedMovies.forEach((item) => {
       if (item.id === card || item.movieId === card) {
+        setLoading(true);
         apiMain.removeMovie(item._id)
         .then((item) => {
-          console.log(item);
           reloadSavedMovies();
+          setLoading(false);
         })
         .catch((err)=>{
           console.log(err);
+          setLoading(false);
         });
       } 
     });
   }
-
-
 
   React.useEffect(() => {
     tokenCheck();
@@ -118,32 +121,39 @@ function App() {
     }
   }, [loggedIn]);
 
+
+
   function handleLogin(email, password) {
+    setLoading(true);
     return auth.authorize(email, password)
       .then((value) => {
         if (value.token) {
             setLoggedIn(true);
             localStorage.setItem("token", value.token);
             history.push('/movies');
-            console.log(value.token);
             window.location.reload();
+            setLoading(false);
             return;
         }
       })
       .catch((err)=>{
         console.log(err);
+        setLoading(false);
       });
   }
 
   function handleRegister(name, email, password) {   
+    setLoading(true);
     auth.register(name, email, password)
       .then((res) => {
         if (res.statusCode !== 400){
           history.push('/sign-in');
+          setLoading(false);
         }
       })
       .catch((err)=>{
         console.log(err);
+        setLoading(false);
       });
   }
 
@@ -154,9 +164,8 @@ function App() {
         .then((res) => {
           if (res.email) {
             setLoggedIn(true);
-            setData({ email: res.email});
             setCurrentUser({...res});
-            history.push('/movies')
+            history.push('/movies');
           }
         })
         .catch((err)=>{
@@ -181,13 +190,15 @@ function App() {
   }
 
   function handleEditProfile(name, email) {
-    console.log(name, email);
+    setLoading(true);
     apiMain.editProfile(name, email)
       .then((values) => {
         setCurrentUser(values);
+        setLoading(false);
       })
       .catch((err)=>{
         console.log(err);
+        setLoading(false);
       });
   }
 
@@ -226,6 +237,7 @@ function App() {
             <NotFound />
           </Route>
         </Switch>
+        <Preloader isOpen={loading}/>
         <Menu isOpen={isPopupOpen} onClose={handlePopupCloseClick} />
       </div>
     </CurrentUserContext.Provider>

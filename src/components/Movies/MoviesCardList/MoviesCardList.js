@@ -6,7 +6,6 @@ import './MoviesCardList.css';
 function MoviesCardList(props) {
   const [renderCards, setRenderCards] = React.useState([]);
   const [numberCards, setNumberCards] = React.useState(16);
-  const [cardId, setCardId] = React.useState('');
 
   function addCards() {
     setRenderCards(props.searchCards.filter((card, index) => index < renderCards.length + 4))
