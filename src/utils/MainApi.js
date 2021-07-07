@@ -20,13 +20,13 @@ class MainApi {
     }); 
   }
 
-  editProfile(data) {
+  editProfile(name, email) {
     return fetch(`${this.url}/users/me`, {
       method: "PATCH",
       headers: this.headers,
       body: JSON.stringify({
-        name: data.name,
-        email: data.email
+        name: name,
+        email: email
       })
     })
     .then((res) => {
@@ -67,7 +67,6 @@ class MainApi {
   }
 
   removeMovie(id) {
-    console.log(`${this.url}/movies/${id}`);
     return fetch(`${this.url}/movies/${id}`, {
       method: "DELETE",
       headers: this.headers
