@@ -44,13 +44,14 @@ function App() {
   }, []);
 
   React.useEffect(() => {
-    reloadSavedMovies();
   }, [savedMovies]);
 
   function reloadSavedMovies() {
     apiMain.getMovies()
       .then((items) => {
-        setSavedMovies(items);
+        setSavedMovies(items.filter((item) => {
+          return item.owner === currentUser._id;
+        }))
       })
       .catch((err) => {
         console.log(err);
@@ -225,7 +226,7 @@ function App() {
           <ProtectedRoute path='/movies' loggedIn={loggedIn}>
             <Header path={'/movies'} isOpen={handlePopupOpenClick} />
             <SearchForm handleSearchMovies={handleSearchMovies} handleCheckboxChecked={handleCheckboxChecked} path={'/movies'} />
-            <Movies path={'/movies'} searchCards={searchCards} savedMovies={savedMovies} removeMovie={removeMovie} isSaved={false} />
+            <Movies path={'/movies'} searchCards={searchCards} savedMovies={savedMovies} removeMovie={removeMovie} isSaved={false} reloadSavedMovies={reloadSavedMovies} />
             <Footer />
           </ProtectedRoute>
           <Route exact path="/">
