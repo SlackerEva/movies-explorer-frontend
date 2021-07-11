@@ -20,6 +20,7 @@ function MoviesCard(props) {
       apiMain.addMovie(props.card)
         .then((values) => {
           setCheck(true);
+          props.reloadSavedMovies();
         })
         .catch((err)=>{
           console.log(err);
@@ -32,7 +33,7 @@ function MoviesCard(props) {
       
   function handleRemoveCard(e) {
     e.preventDefault();
-    props.removeMovie(props.card.id);
+    props.removeMovie(props.card.movieId);
   }
 
   if (!props.isSaved) {

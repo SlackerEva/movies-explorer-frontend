@@ -37,7 +37,7 @@ function MoviesCardList(props) {
           let check = props.savedMovies.filter((item) => {
             return item.movieId === card.id;
           }).length > 0 ? true : false;
-          return <MovieCard card={card} key={card.id} check={check} removeMovie={props.removeMovie} isSaved={props.isSaved} />
+          return <MovieCard card={card} key={card.id} check={check} removeMovie={props.removeMovie} isSaved={props.isSaved} reloadSavedMovies={props.reloadSavedMovies} />
         })}
       </div>
       <div className='movies-list__continue'>
