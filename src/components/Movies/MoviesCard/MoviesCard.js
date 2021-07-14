@@ -4,7 +4,6 @@ import apiMain from '../../../utils/MainApi';
 
 function MoviesCard(props) {
   const [check, setCheck] = React.useState(props.check);
- // const [MovieId, setMovieId] = React.useState('');
 
   function calculateDuration(duration) {
     return Math.floor(duration / 60) + 'ч' + duration % 60 +'м';
@@ -19,21 +18,34 @@ function MoviesCard(props) {
     if (check === false) {
       apiMain.addMovie(props.card)
         .then((values) => {
+          props.saveMovies(values);
+          console.log(values);
           setCheck(true);
-          props.reloadSavedMovies();
         })
         .catch((err)=>{
           console.log(err);
         });
     } else {
       setCheck(false);
-      props.removeMovie(props.card.id);
+      apiMain.removeMovie(props.card._id)
+        .then((item) => {
+          props.removeMovie(item._id)
+        })
+        .catch((err)=>{
+          console.log(err);
+        });
     }
   }
       
   function handleRemoveCard(e) {
     e.preventDefault();
-    props.removeMovie(props.card.movieId);
+    apiMain.removeMovie(props.card._id)
+      .then((item) => {
+        props.removeMovie(item._id)
+      })
+      .catch((err)=>{
+        console.log(err);
+      });
   }
 
   if (!props.isSaved) {

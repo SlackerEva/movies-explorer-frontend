@@ -4,10 +4,10 @@ import {Link} from 'react-router-dom';
 import account from '../../images/account.svg';
 
 function Header(props) {
-  if (props.path === '/') {
+  if (props.path === '/' && props.loggedIn === false) {
     return (
       <header className='header'>
-        <img className='logo' src={logo} alt='Логотип' />
+        <Link className='header__logo-link' to='/'><img className='logo' src={logo} alt='Логотип' /></Link>
         <div className='header__wrapper'>
           <Link className='header__link' to='/sign-up'>Регистрация</Link>
           <Link className='header__link header__link_green' to='/sign-in'>Войти</Link>
@@ -17,7 +17,7 @@ function Header(props) {
   } else {
     return (
       <header className='header'>
-        <img className='logo' src={logo} alt='Логотип' />
+        <Link className='header__logo-link' to='/'><img className='logo' src={logo} alt='Логотип' /></Link>
         <button className='menu' onClick={props.isOpen} />
         <nav className='header__nav'>
           <div className='header__nav-wrapper'>

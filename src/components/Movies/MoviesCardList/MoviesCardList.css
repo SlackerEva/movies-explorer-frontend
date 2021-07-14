@@ -5,6 +5,16 @@
   justify-content: center;
 }
 
+.movies-list__not-found {
+  display: flex;
+}
+
+.movies-list__text {
+  margin: 40px auto;
+  font-size: 20px;
+  line-height: 1.25;
+}
+
 .movies-list__button {
   margin: 50px 0 80px;
   width: 320px;
