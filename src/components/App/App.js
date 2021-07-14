@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import api from '../../utils/MoviesApi';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 import Header from '../Header/Header';
 import Main from '../Main/Main';
 import Profile from '../Profile/Profile';
@@ -20,6 +20,7 @@ import apiMain from '../../utils/MainApi';
 import Preloader from '../../components/Movies/Preloader/Preloader';
 
 function App() {
+  const { pathname } = useLocation();
   const history = useHistory();
   const [isPopupOpen, setIsPopupOpen] = React.useState(false);
   const [movies, setMovies] = React.useState([]);
@@ -30,37 +31,23 @@ function App() {
   const [loggedIn, setLoggedIn] = React.useState(false);
   const [savedMovies, setSavedMovies] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [beforeSearch, setBeforeSearch] = React.useState(false);
 
   React.useEffect(() => {
-    reloadSavedMovies();
-
     api.getMovies()
       .then((items) => {
-        setMovies(items);
+        setMovies(prevState => items);
       })
       .catch((err) => {
         console.log(err);
       });
   }, []);
 
-  React.useEffect(() => {
-  }, [savedMovies]);
-
-  function reloadSavedMovies() {
-    apiMain.getMovies()
-      .then((items) => {
-        setSavedMovies(items.filter((item) => {
-          return item.owner === currentUser._id;
-        }))
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
   function handleSearchMovies(text, path) {
+    setBeforeSearch(true);
     if (path === '/movies') {
       searchShortMovies(text, movies, setSearchCards, path);
+      
     } else {
       searchShortMovies(text, savedMovies, setSearchSavedCards, path);
     }
@@ -84,26 +71,20 @@ function App() {
     }
   }
 
-
   function handleCheckboxChecked(checked) {
     setCheck(checked);
   }
 
-  function removeMovie(card) {
-    savedMovies.forEach((item) => {
-      if (item.id === card || item.movieId === card) {
-        setLoading(true);
-        apiMain.removeMovie(item._id)
-        .then((item) => {
-          reloadSavedMovies();
-          setLoading(false);
-        })
-        .catch((err)=>{
-          console.log(err);
-          setLoading(false);
-        });
-      } 
-    });
+  function handleClickSaveMovies(data) {
+    setSavedMovies(prevState => [...prevState, data])
+  }
+
+  function handleClickRemoveMovies(cardId) {
+    setSavedMovies(prevState => {
+      return prevState.filter((item) => {  
+        return item._id !== cardId;
+      }) 
+    })
   }
 
   React.useEffect(() => {
@@ -112,13 +93,17 @@ function App() {
 
   React.useEffect(() => {
     if(loggedIn) {
-      apiMain.getProfile()
-      .then((values)=>{
-        setCurrentUser(values);
-      })
-      .catch((err)=>{
-        console.log(err);
-      })
+      Promise.all([apiMain.getProfile(), apiMain.getMovies()])
+        .then(([usersValue, saveMovies]) => {
+          setCurrentUser(usersValue);
+          setSavedMovies(saveMovies.filter((item) => {
+            return item.owner === usersValue._id;
+          }))
+
+        })
+        .catch((err)=>{
+          console.log(err);
+        })
     }
   }, [loggedIn]);
 
@@ -158,15 +143,19 @@ function App() {
       });
   }
 
+  const PAGE_WITH_AUTH = ['/movies','/profile','/saved-movies'];
+  const PAGE_WITHOUT_AUTH = ['/sign-in','/sign-up'];
+
   function tokenCheck() {
-    let token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
     if (token) {
       auth.getContent(token)
         .then((res) => {
           if (res.email) {
             setLoggedIn(true);
             setCurrentUser({...res});
-            history.push('/movies');
+            const pathToRedirect = PAGE_WITH_AUTH.includes(pathname) ? pathname : (pathname === '/' ? pathname : (PAGE_WITHOUT_AUTH.includes(pathname) ? '/' : 'notFound'));
+            history.push(pathToRedirect);
           }
         })
         .catch((err)=>{
@@ -195,6 +184,7 @@ function App() {
     apiMain.editProfile(name, email)
       .then((values) => {
         setCurrentUser(values);
+        alert('Изменения были успешно сохранены');
         setLoading(false);
       })
       .catch((err)=>{
@@ -214,23 +204,23 @@ function App() {
             <Login onLogin={handleLogin} />
           </Route>
           <ProtectedRoute path='/profile' loggedIn={loggedIn} >
-            <Header path={'/movies'} />
+            <Header path={'/movies'} loggedIn={loggedIn} />
             <Profile logeOut={signOut} edit={handleEditProfile}/>
           </ProtectedRoute>
           <ProtectedRoute path='/saved-movies' loggedIn={loggedIn}>
-            <Header path={'/movies'} isOpen={handlePopupOpenClick} />
+            <Header path={'/movies'} isOpen={handlePopupOpenClick} loggedIn={loggedIn} />
             <SearchForm handleSearchMovies={handleSearchMovies} handleCheckboxChecked={handleCheckboxChecked} path={'/saved-movies'} />
-            <SavedMovies path={'/saved-movies'} searchCards={searchSavedCards} savedMovies={savedMovies} removeMovie={removeMovie} isSaved={true} />
+            <SavedMovies path={'/saved-movies'} searchCards={searchSavedCards} savedMovies={savedMovies}  saveMovies={handleClickSaveMovies} removeMovie={handleClickRemoveMovies} isSaved={true} />
             <Footer />
           </ProtectedRoute>
           <ProtectedRoute path='/movies' loggedIn={loggedIn}>
-            <Header path={'/movies'} isOpen={handlePopupOpenClick} />
+            <Header path={'/movies'} isOpen={handlePopupOpenClick} loggedIn={loggedIn} />
             <SearchForm handleSearchMovies={handleSearchMovies} handleCheckboxChecked={handleCheckboxChecked} path={'/movies'} />
-            <Movies path={'/movies'} searchCards={searchCards} savedMovies={savedMovies} removeMovie={removeMovie} isSaved={false} reloadSavedMovies={reloadSavedMovies} />
+            <Movies path={'/movies'} searchCards={searchCards} savedMovies={savedMovies} saveMovies={handleClickSaveMovies} removeMovie={handleClickRemoveMovies} isSaved={false} beforeSearch={beforeSearch} />
             <Footer />
           </ProtectedRoute>
           <Route exact path="/">
-            <Header path={'/'} />
+            <Header path={'/'} loggedIn={loggedIn} />
             <Main />
             <Footer />
           </Route>
