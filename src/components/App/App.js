@@ -23,7 +23,6 @@ function App() {
   const { pathname } = useLocation();
   const history = useHistory();
   const [isPopupOpen, setIsPopupOpen] = React.useState(false);
-  const [movies, setMovies] = React.useState([]);
   const [searchCards, setSearchCards] = React.useState([]);
   const [searchSavedCards, setSearchSavedCards] = React.useState([]);
   const [check, setCheck] = React.useState(false);
@@ -32,41 +31,76 @@ function App() {
   const [savedMovies, setSavedMovies] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [beforeSearch, setBeforeSearch] = React.useState(false);
+  const [searchText, setSearchText] = React.useState('');
+  const [searchSavedText, setSearchSavedText] = React.useState('');
 
-  React.useEffect(() => {
-    api.getMovies()
-      .then((items) => {
-        setMovies(prevState => items);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  React.useEffect(() => { 
+    const searchedMovies = localStorage.getItem('searchedMovies');
+    const searchedSavedMovies = localStorage.getItem('searchedSavedMovies');
+    const movies = localStorage.getItem('movies');
+    const savedMovies = localStorage.getItem('savedMovies');
+    const searchText = localStorage.getItem('searchText');
+    const searchSavedText = localStorage.getItem('searchSavedText');
+
+    if (searchedMovies) {
+      setSearchCards(JSON.parse(searchedMovies));
+    }
+    if (searchedSavedMovies) {
+      setSearchSavedCards(JSON.parse(searchedSavedMovies));
+    }
+    if (savedMovies) {
+      setSavedMovies(JSON.parse(savedMovies));
+    }
+    if (searchText) {
+      setSearchText(searchText);
+    }
+    if (searchSavedText) {
+      setSearchSavedText(searchSavedText);
+    }
+    if (!movies) {
+      api.getMovies()
+        .then((items) => {
+          localStorage.setItem('movies', JSON.stringify(items));      
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }, []);
 
   function handleSearchMovies(text, path) {
     setBeforeSearch(true);
+    const movies = JSON.parse(localStorage.getItem('movies'));
     if (path === '/movies') {
-      searchShortMovies(text, movies, setSearchCards, path);
-      
+      searchShortMovies(text, setSearchCards, movies, path, 'searchedMovies');
+      localStorage.setItem('searchText', text);
+      setSearchText(text);
     } else {
-      searchShortMovies(text, savedMovies, setSearchSavedCards, path);
+      searchShortMovies(text, setSearchSavedCards, savedMovies, path, 'searchedSavedMovies');
+      localStorage.setItem('searchSavedText', text);
+      setSearchSavedText(text);
     }
   }
 
-  function searchShortMovies(text, movies, search, path) {
+  function searchShortMovies(text, search, movies, path, storage) {
     if (text !== '') {
       if (check === true) {
-        search(movies.filter((movie) => {
+        const findedMovies = movies.filter((movie) => {
           return ((movie.nameRU).toLowerCase().includes(text.toLowerCase()) && movie.duration < 41);
-        }));
+        });
+        localStorage.setItem(storage, JSON.stringify(findedMovies));
+        search(JSON.parse(localStorage.getItem(storage)));
       } else {
-        search(movies.filter((movie) => {
+        const findedMovies = movies.filter((movie) => {
           return (movie.nameRU).toLowerCase().includes(text.toLowerCase());
-        }));
+        });
+        localStorage.setItem(storage, JSON.stringify(findedMovies));
+        search(JSON.parse(localStorage.getItem(storage)));
       }
     } else if (path === '/movies') {
       alert('Нужно ввести ключевое слово');
     } else {
+      localStorage.setItem(storage, JSON.stringify(movies));
       search(movies);
     }
   }
@@ -96,10 +130,11 @@ function App() {
       Promise.all([apiMain.getProfile(), apiMain.getMovies()])
         .then(([usersValue, saveMovies]) => {
           setCurrentUser(usersValue);
-          setSavedMovies(saveMovies.filter((item) => {
+          const accMovies = saveMovies.filter((item) => {
             return item.owner === usersValue._id;
-          }))
-
+          })
+          setSavedMovies(accMovies);
+          localStorage.setItem('savedMovies', JSON.stringify(accMovies));
         })
         .catch((err)=>{
           console.log(err);
@@ -167,6 +202,11 @@ function App() {
 
   function signOut(){
     localStorage.removeItem('token');
+    localStorage.removeItem('movies');
+    localStorage.removeItem('searchedMovies');
+    localStorage.removeItem('savedMovies');
+    localStorage.removeItem('searchSavedText');
+    localStorage.removeItem('searchText');
     setLoggedIn(false);
     history.push('/sign-in');
   }
@@ -209,13 +249,13 @@ function App() {
           </ProtectedRoute>
           <ProtectedRoute path='/saved-movies' loggedIn={loggedIn}>
             <Header path={'/movies'} isOpen={handlePopupOpenClick} loggedIn={loggedIn} />
-            <SearchForm handleSearchMovies={handleSearchMovies} handleCheckboxChecked={handleCheckboxChecked} path={'/saved-movies'} />
+            <SearchForm handleSearchMovies={handleSearchMovies} handleCheckboxChecked={handleCheckboxChecked} path={'/saved-movies'} defautlValue={searchSavedText} />
             <SavedMovies path={'/saved-movies'} searchCards={searchSavedCards} savedMovies={savedMovies}  saveMovies={handleClickSaveMovies} removeMovie={handleClickRemoveMovies} isSaved={true} />
             <Footer />
           </ProtectedRoute>
           <ProtectedRoute path='/movies' loggedIn={loggedIn}>
             <Header path={'/movies'} isOpen={handlePopupOpenClick} loggedIn={loggedIn} />
-            <SearchForm handleSearchMovies={handleSearchMovies} handleCheckboxChecked={handleCheckboxChecked} path={'/movies'} />
+            <SearchForm handleSearchMovies={handleSearchMovies} handleCheckboxChecked={handleCheckboxChecked} path={'/movies'} defautlValue={searchText} />
             <Movies path={'/movies'} searchCards={searchCards} savedMovies={savedMovies} saveMovies={handleClickSaveMovies} removeMovie={handleClickRemoveMovies} isSaved={false} beforeSearch={beforeSearch} />
             <Footer />
           </ProtectedRoute>

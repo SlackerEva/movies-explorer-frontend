@@ -19,7 +19,6 @@ function MoviesCard(props) {
       apiMain.addMovie(props.card)
         .then((values) => {
           props.saveMovies(values);
-          console.log(values);
           setCheck(true);
         })
         .catch((err)=>{

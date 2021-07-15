@@ -19,7 +19,7 @@ function SearchForm(props) {
   return(
     <form className='search'>
       <div className='search__wrapper'>
-        <input className='search__input' name='text' type='text' placeholder="Фильм" />
+        <input className='search__input' name='text' type='text' placeholder="Фильм" defaultValue={props.defautlValue} />
         <button className='search__button' type='submit' onClick={getText}>
           <img className='search__img' src={search} alt='Иконка поиска' />
         </button>
